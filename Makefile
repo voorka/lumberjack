@@ -1,2 +1,2 @@
-compile:
-	ocamlbuild -use-ocamlfind parser.cmo lumber.cmo main.cmo
+note:
+	ocamlbuild -use-ocamlfind -package str,unix main.byte 
