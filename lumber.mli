@@ -11,4 +11,4 @@ type tree =
     | Leaf
     | Node of lumber * tree * tree * int
 
-val addLog: date -> string -> string list-> tree -> tree
+val addLog: tree -> lumber -> tree

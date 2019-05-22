@@ -71,11 +71,15 @@ let rec balance tree =
     | Node(t,l,r,h) -> if ((height_difference l r) > 1) then (rotate tree)
                        else tree
 
-let rec addLog d n tags tree =
+let rec addLog tree lum =
+    let d = lum.date in
       match tree with
-      | Leaf -> Node ({date=d; note=n; tags=tags}, Leaf, Leaf, 1)
+      | Leaf -> Node (lum, Leaf, Leaf, 1)
       | Node({date=old_d; note=old_n; tags=old_tags}, l, r, h) ->
         match (compare old_d d) with
         | EQ -> raise (Failure "Two notes have the same time. Something is wrong.")
-        | LT -> balance(Node({date=old_d; note=old_n; tags=old_tags}, l, (addLog d n tags r), h+1))
-        | GT -> balance(Node({date=old_d; note=old_n; tags=old_tags}, (addLog d n tags l), r, h+1))
+        | LT -> balance(Node({date=old_d; note=old_n; tags=old_tags}, l, (addLog r lum), h+1))
+        | GT -> balance(Node({date=old_d; note=old_n; tags=old_tags}, (addLog l lum), r, h+1))
+
+let addLogs llist :tree =
+    List.fold_left (addLog) Leaf llist  
