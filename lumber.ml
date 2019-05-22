@@ -79,12 +79,3 @@ let rec addLog d n tags tree =
         | EQ -> raise (Failure "Two notes have the same time. Something is wrong.")
         | LT -> balance(Node({date=old_d; note=old_n; tags=old_tags}, l, (addLog d n tags r), h+1))
         | GT -> balance(Node({date=old_d; note=old_n; tags=old_tags}, (addLog d n tags l), r, h+1))
-
-
-(* let right_rotate tree =
-    match tree with
-    | Node(z, Node( y, Node(x, x_l ,x_r, x_h), y_r, y_h),z_r,z_h) -> 
-        Node(y, Node(x, x_l,x_r,x_h), Node(z,y_r,z_r,z_h-2), y_h)
-    | Node(z, z_l, Node(y, Node(x,x_l, x_r, x_h),y_r,y_h), z_h) ->
-        Node(z, z_l, Node(x,x_l, Node(y, x_r, y_r, y_h+1),x_h-1), z_h)
-    |_ -> raise Impossible *)
