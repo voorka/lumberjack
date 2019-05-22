@@ -1,0 +1,22 @@
+### Starting build.
+# Target: parser.mli.depends, tags: { extension:mli, file:parser.mli, ocaml, ocamldep, quiet }
+ocamldep.opt -modules parser.mli > parser.mli.depends # cached
+# Target: parser.cmi, tags: { byte, compile, extension:mli, file:parser.mli, interf, ocaml, quiet }
+ocamlc.opt -c -o parser.cmi parser.mli # cached
+# Target: parser.ml.depends, tags: { extension:ml, file:parser.ml, ocaml, ocamldep, quiet }
+ocamldep.opt -modules parser.ml > parser.ml.depends # cached
+# Target: parser.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:parser.cmo, file:parser.ml, implem, ocaml, quiet }
+ocamlc.opt -c -o parser.cmo parser.ml # cached
+# Target: lumber.mli.depends, tags: { extension:mli, file:lumber.mli, ocaml, ocamldep, quiet }
+ocamldep.opt -modules lumber.mli > lumber.mli.depends # cached
+# Target: lumber.cmi, tags: { byte, compile, extension:mli, file:lumber.mli, interf, ocaml, quiet }
+ocamlc.opt -c -o lumber.cmi lumber.mli # cached
+# Target: lumber.ml.depends, tags: { extension:ml, file:lumber.ml, ocaml, ocamldep, quiet }
+ocamldep.opt -modules lumber.ml > lumber.ml.depends
+# Target: lumber.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:lumber.cmo, file:lumber.ml, implem, ocaml, quiet }
+ocamlc.opt -c -o lumber.cmo lumber.ml
+# Target: main.ml.depends, tags: { extension:ml, file:main.ml, ocaml, ocamldep, quiet }
+ocamldep.opt -modules main.ml > main.ml.depends # cached
+# Target: main.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:main.cmo, file:main.ml, implem, ocaml, quiet }
+ocamlc.opt -c -o main.cmo main.ml # cached
+# Compilation successful.
