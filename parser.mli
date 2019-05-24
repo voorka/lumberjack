@@ -1,7 +1,7 @@
 open Types
 
-val parse: string -> command
-
 val txtToLumberList: string -> lumber list
 
-val extractDate: string -> date
+val extractDate: string -> date * bool
+
+val getRange: date -> date list

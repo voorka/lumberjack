@@ -13,23 +13,24 @@ let display_note_option note =
 let rec display_note note_list =
     match note_list with
     |h::t -> print_endline("Found note: "); print_endline(h.note); display_note t
-    | _ -> print_endline("")
+    | _ -> print_endline("Did not find any notes")
 
-let rec to_string arr i acc =
-    if i == 1 then acc
-    else to_string arr (i-1) (" " ^ arr.(i-1) ^ acc)
-
-let rec to_list arr i acc =
-    if i == 1 then acc
-    else to_list arr (i-1) (arr.(i-1)::acc)
-
-let print_note x =
-    display_note_option (Lumber.getLog (Parser.extractDate x) !Init.currentTreeref)
+let print_range_dates (beginDate:date) (endDate:date) = 
+    display_note (Lumber.getRangeLogs beginDate endDate !Init.currentTreeref)
 
 let print_range_note x =
     let dates = Str.split (Str.regexp "-") x in
     match dates with
-    |h::t::[] -> display_note (Lumber.getRangeLogs (Parser.extractDate h) (Parser.extractDate t) !Init.currentTreeref)
+        |h::t::[] -> print_range_dates (fst (Parser.extractDate h)) (fst (Parser.extractDate t))
+        | _ -> print_endline("Date range must be of form MM/DD/YYYY//HH:MM:SS-MM/DD/YYYY//HH:MM:SS")
+
+let print_note x =
+    let d = Parser.extractDate x in
+        if (snd d) then begin
+                match (Parser.getRange (fst d)) with
+                | h::t::[] -> print_range_dates (h:date) (t:date)
+                end
+        else display_note_option (Lumber.getLog (fst (Parser.extractDate x)) !Init.currentTreeref)
 
 let main (args: string array) =
   if Array.length args < 2 then raise (Failure "No text file specified")

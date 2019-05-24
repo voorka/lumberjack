@@ -17,12 +17,18 @@ let format_date d:string =
     ^ " " ^ (string_of_int d.hour) ^ ":" ^ (string_of_int d.minute) ^ ":" ^ (string_of_int d.second)
 
 (* Takes in a string of the form DD/MM/YYYY HH:MM:SS and converts to date type*)
-let extractDate d:date =
+let extractDate d =
     let dlist = Str.split (Str.regexp ":\\|[\\/]+\\|[ \t]+") d in
     let dlist_int = List.map int_of_string dlist in
         match dlist_int with
-        |m::d::y::h::mi::s::_ ->
-            {month=m ; day=d; year=y; hour=h; minute=mi; second =s}
+        |m::d::y::h::mi::s::_ -> {month=m ; day=d; year=y; hour=h; minute=mi; second =s}, false
+        |m::d::y::h::_ -> {month=m ; day=d; year=y; hour=h; minute=0; second =0}, true
+        |m::d::y::_ -> {month=m ; day=d; year=y; hour=0; minute=0; second =0}, true
+    
+let getRange (t:date) : date list=
+    match t with
+    |{month=m ; day=d; year=y; hour=0; minute=0; second =0} -> t::{month=m ; day=d+1; year=y; hour=0; minute=0; second =0}::[]
+    |{month=m ; day=d; year=y; hour=h; minute=0; second =0} -> t::{month=m ; day=d; year=y; hour=h+1; minute=0; second =0}::[]
 
 (* returns a date object of current time *)
 let getDate:date =
@@ -38,7 +44,7 @@ let convert_to_new_lumber (note:string list) : lumber =
 (* Takes in string list with first string of the form DD/MM/YYYY HH:MM:SS and converts to lumber*)
 let convert_to_lumber (note:string list) : lumber =
     match note with
-    | h::t -> let d = extractDate h in {date=d; note=(List.fold_left (fun x y -> x ^ "\n" ^ y) (format_date d) t); tags=[]} 
+    | h::t -> let d = fst (extractDate h) in {date=d; note=(List.fold_left (fun x y -> x ^ "\n" ^ y) (format_date d) t); tags=[]} 
     | _ -> raise (Failure "Empty note in convert to lumber")
 
 
@@ -53,13 +59,6 @@ let rec process_string_list (slst:string list) (acc:string list) (llst:lumber li
 
 let txtToLumberList txt =
     (List.rev(process_string_list (read_lines txt) [] []))
-
-let parse str =
-    print_endline(str);
-    match Str.split (Str.regexp " ")(String.lowercase_ascii str) with
-    |"get"::t -> print_endline(format_date (extractDate (String.concat " " t)));{verb_word = Get; target = (Date (extractDate (String.concat " " t)))} 
-    |"init"::t -> {verb_word = Init; target = (Obj (String.concat " " t))}
-    | x -> {verb_word = Get; target = (Obj (String.concat "" (x)))}
 
 (* let get_month m =
     match m with
