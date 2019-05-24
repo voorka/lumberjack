@@ -13,22 +13,29 @@ let display_note_option note =
 let rec display_note note_list =
     match note_list with
     |h::t -> print_endline("Found note: "); print_endline(h.note); display_note t
-    | _ -> print_endline("Did not find any notes")
+    | _ -> print_endline("Did not find any more notes")
 
 let print_range_dates (beginDate:date) (endDate:date) = 
     display_note (Lumber.getRangeLogs beginDate endDate !Init.currentTreeref)
 
 let print_range_note x =
     let dates = Str.split (Str.regexp "-") x in
+
     match dates with
-        |h::t::[] -> print_range_dates (fst (Parser.extractDate h)) (fst (Parser.extractDate t))
+        |h::t::[] ->  let date_first_resp = Parser.extractDate h in
+                    let date_second_resp = Parser.extractDate t in 
+                    let date_first = fst date_first_resp in
+                    let date_second = fst date_second_resp in
+                    if (snd date_first_resp) then let date_first = (fst (getRange date_first)) in
+                    if (snd date_second_resp) then let date_second = (snd (getRange date_second)) in
+                        print_range_dates (date_first) (date_second)
         | _ -> print_endline("Date range must be of form MM/DD/YYYY//HH:MM:SS-MM/DD/YYYY//HH:MM:SS")
 
 let print_note x =
     let d = Parser.extractDate x in
         if (snd d) then begin
                 match (Parser.getRange (fst d)) with
-                | h::t::[] -> print_range_dates (h:date) (t:date)
+                | (h,t) -> print_range_dates (h:date) (t:date)
                 end
         else display_note_option (Lumber.getLog (fst (Parser.extractDate x)) !Init.currentTreeref)
 

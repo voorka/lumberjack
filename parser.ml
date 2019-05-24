@@ -22,13 +22,12 @@ let extractDate d =
     let dlist_int = List.map int_of_string dlist in
         match dlist_int with
         |m::d::y::h::mi::s::_ -> {month=m ; day=d; year=y; hour=h; minute=mi; second =s}, false
-        |m::d::y::h::_ -> {month=m ; day=d; year=y; hour=h; minute=0; second =0}, true
         |m::d::y::_ -> {month=m ; day=d; year=y; hour=0; minute=0; second =0}, true
     
-let getRange (t:date) : date list=
+(* Returns date and date a day later *)
+let getRange (t:date) : date*date=
     match t with
-    |{month=m ; day=d; year=y; hour=0; minute=0; second =0} -> t::{month=m ; day=d+1; year=y; hour=0; minute=0; second =0}::[]
-    |{month=m ; day=d; year=y; hour=h; minute=0; second =0} -> t::{month=m ; day=d; year=y; hour=h+1; minute=0; second =0}::[]
+    |{month=m ; day=d; year=y; hour=0; minute=0; second =0} -> (t,{month=m ; day=d+1; year=y; hour=0; minute=0; second =0})
 
 (* returns a date object of current time *)
 let getDate:date =
