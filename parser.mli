@@ -1,7 +1,10 @@
 open Types
+open Unix
 
 val txtToLumberList: string -> lumber list
 
-val extractDate: string -> date * bool
+val extractDate: string -> tm * bool
 
-val getRange: date -> date*date
+val getRange: tm -> tm*tm
+
+val getDate: tm

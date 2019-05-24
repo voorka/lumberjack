@@ -1,37 +1,16 @@
 open Parser
 open Pervasives
 open Types
+open Unix
 
 (* Returns if old_date is [EQ|LT|GT] new_date *)
-let compare old_date new_date =
-    match old_date with
-    | {month=old_month; day=old_day; year=old_year; hour=old_hour; minute=old_min; second=old_sec} -> 
-        match new_date with
-        | {month=month; day=day; year=year; hour=hour; minute=min; second=sec} ->
-            let cmp_year = (Pervasives.compare old_year year) in 
-            if( cmp_year == 0) then 
-                let cmp_month = (Pervasives.compare old_month month) in 
-                if (cmp_month == 0) then
-                    let cmp_day = (Pervasives.compare old_day day) in 
-                    if (cmp_day == 0) then
-                        let cmp_hour = (Pervasives.compare old_hour hour) in 
-                        if (cmp_hour == 0) then 
-                            let cmp_min = (Pervasives.compare old_min min) in 
-                            if (cmp_min == 0) then 
-                                let cmp_sec = (Pervasives.compare old_sec sec) in 
-                                if (cmp_sec == 0) then EQ
-                                else if (cmp_sec < 0) then LT
-                                else GT
-                            else if (cmp_min < 0) then LT
-                            else GT
-                        else if (cmp_hour < 0) then LT
-                        else GT
-                    else if (cmp_day < 0) then LT
-                    else GT
-                else if (cmp_month < 0) then LT
-                else GT
-            else if (cmp_year < 0) then LT
-            else GT 
+let compare (old_date:tm) (new_date:tm) =
+    let old_time = mktime old_date in  
+    let new_time = mktime new_date in
+    if old_time == new_time then EQ
+    else if old_time > new_time then GT
+    else LT
+
 
 let height t =
     match t with

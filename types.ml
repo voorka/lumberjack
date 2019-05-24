@@ -1,14 +1,7 @@
-type date = {
-    month: int;
-    day: int;
-    year: int;
-    hour: int;
-    minute: int;
-    second: int;
-}
+open Unix
 
 type lumber = {
-    date: date;
+    date: tm;
     note: string;
     tags: string list;
 }
@@ -23,7 +16,7 @@ type tree =
 
 type verb = Get | Init
 
-type target = Date of date | Obj of string
+type target = Date of tm | Obj of string
 
 type command = {
     verb_word: verb;

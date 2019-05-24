@@ -15,7 +15,7 @@ let rec display_note note_list =
     |h::t -> print_endline("Found note: "); print_endline(h.note); display_note t
     | _ -> print_endline("Did not find any more notes")
 
-let print_range_dates (beginDate:date) (endDate:date) = 
+let print_range_dates (beginDate:tm) (endDate:tm) = 
     display_note (Lumber.getRangeLogs beginDate endDate !Init.currentTreeref)
 
 let print_range_note x =
@@ -35,9 +35,12 @@ let print_note x =
     let d = Parser.extractDate x in
         if (snd d) then begin
                 match (Parser.getRange (fst d)) with
-                | (h,t) -> print_range_dates (h:date) (t:date)
+                | (h,t) -> print_range_dates (h:tm) (t:tm)
                 end
         else display_note_option (Lumber.getLog (fst (Parser.extractDate x)) !Init.currentTreeref)
+    
+let print_all () =
+    print_range_dates  (fst (Parser.extractDate "0/0/0")) Parser.getDate
 
 let main (args: string array) =
   if Array.length args < 2 then raise (Failure "No text file specified")
@@ -45,6 +48,7 @@ let main (args: string array) =
     let speclist = [("-init", Arg.String Init.init, "Creates Entry Tree");
     ("--get-date",  Arg.String print_note, "Prints note from date to stdout. Date must be of form MM/DD/YYYY//HH:MM:SS" );
     ("--get-dates", Arg.String print_range_note, "Prints note from date range to stdout. Date range must be of form MM/DD/YYYY//HH:MM:SS-MM/DD/YYYY//HH:MM:SS" );
+    ("--get-all", Arg.Unit print_all, "Prints all notes" );
     ]in
     let usage_msg = "Currently supported options include:" in
     Arg.parse speclist print_endline usage_msg

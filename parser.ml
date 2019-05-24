@@ -13,26 +13,26 @@ let read_lines name : string list =
   loop []
 
 let format_date d:string =
-    (string_of_int (d.month)) ^ "/" ^ (string_of_int d.day) ^ "/" ^ (string_of_int (d.year))
-    ^ " " ^ (string_of_int d.hour) ^ ":" ^ (string_of_int d.minute) ^ ":" ^ (string_of_int d.second)
+    (string_of_int (d.tm_mon)) ^ "/" ^ (string_of_int d.tm_mday) ^ "/" ^ (string_of_int (d.tm_year))
+    ^ " " ^ (string_of_int d.tm_hour) ^ ":" ^ (string_of_int d.tm_min) ^ ":" ^ (string_of_int d.tm_sec)
 
 (* Takes in a string of the form DD/MM/YYYY HH:MM:SS and converts to date type*)
 let extractDate d =
     let dlist = Str.split (Str.regexp ":\\|[\\/]+\\|[ \t]+") d in
     let dlist_int = List.map int_of_string dlist in
         match dlist_int with
-        |m::d::y::h::mi::s::_ -> {month=m ; day=d; year=y; hour=h; minute=mi; second =s}, false
-        |m::d::y::_ -> {month=m ; day=d; year=y; hour=0; minute=0; second =0}, true
+        |m::d::y::h::mi::s::_ -> {tm_mon=m ; tm_mday=d; tm_year=y; tm_hour=h; tm_min=mi; tm_sec=s; tm_wday=0; tm_yday=0; tm_isdst=false}, false
+        |m::d::y::_ -> {tm_mon=m ; tm_mday=d; tm_year=y; tm_hour=0; tm_min=0; tm_sec =0;tm_wday=0;tm_yday=0;tm_isdst=false}, true
+        |m::d::_ -> {tm_mon=m ; tm_mday=d; tm_year=((localtime(gettimeofday())).tm_year+1900); tm_hour=0; tm_min=0; tm_sec =0;tm_wday=0;tm_yday=0;tm_isdst=false}, true
     
 (* Returns date and date a day later *)
-let getRange (t:date) : date*date=
+let getRange (t:tm) : tm*tm=
     match t with
-    |{month=m ; day=d; year=y; hour=0; minute=0; second =0} -> (t,{month=m ; day=d+1; year=y; hour=0; minute=0; second =0})
+    |{tm_mon=m ; tm_mday=d; tm_year=y; tm_hour=0; tm_min=0; tm_sec=0;tm_wday=0;tm_yday=0;tm_isdst=false} -> (t,{tm_mon=m ; tm_mday=d+1; tm_year=y; tm_hour=0; tm_min=0; tm_sec =0;tm_wday=0;tm_yday=0;tm_isdst=false})
 
 (* returns a date object of current time *)
-let getDate:date =
-    let tm = localtime(gettimeofday()) in
-    {month= tm.tm_mon; day = tm.tm_mday; year=tm.tm_year; hour=tm.tm_hour; minute=tm.tm_min; second = tm.tm_sec}
+let getDate:tm =
+    localtime(gettimeofday())
 
 (* Takes in string list, appends current date, and converts to lumber*)
 let convert_to_new_lumber (note:string list) : lumber =
@@ -45,7 +45,6 @@ let convert_to_lumber (note:string list) : lumber =
     match note with
     | h::t -> let d = fst (extractDate h) in {date=d; note=(List.fold_left (fun x y -> x ^ "\n" ^ y) (format_date d) t); tags=[]} 
     | _ -> raise (Failure "Empty note in convert to lumber")
-
 
 (* Takes in string list and returns lumber list. Assumes list consists of string lists 
 seprated by empty lines that begin with a line of the form DD/MM/YYYY HH:MM:SS *)

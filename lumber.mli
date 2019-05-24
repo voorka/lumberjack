@@ -1,9 +1,10 @@
 open Types
+open Unix
 
 val addLog: tree -> lumber -> tree
 
 val addLogs: lumber list -> tree
 
-val getLog: date -> tree -> lumber option
+val getLog: tm -> tree -> lumber option
 
-val getRangeLogs: date -> date -> tree -> lumber list
+val getRangeLogs: tm -> tm -> tree -> lumber list

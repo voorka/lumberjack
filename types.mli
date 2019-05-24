@@ -1,21 +1,12 @@
-type comparison = EQ | LT | GT
-
-type verb = Get | Init
-
-type date = {
-    month: int;
-    day: int;
-    year: int;
-    hour: int;
-    minute: int;
-    second: int;
-}
+open Unix
 
 type lumber = {
-    date: date;
+    date: tm;
     note: string;
     tags: string list;
 }
+
+type comparison = EQ | LT | GT
 
 (*  node , l_tree, r_tree, height *)
 type tree = 
@@ -23,7 +14,9 @@ type tree =
     | Node of lumber * tree * tree * int
 
 
-type target = Date of date | Obj of string
+type verb = Get | Init
+
+type target = Date of tm | Obj of string
 
 type command = {
     verb_word: verb;
