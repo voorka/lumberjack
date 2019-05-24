@@ -21,9 +21,9 @@ let extractDate d =
     let dlist = Str.split (Str.regexp ":\\|[\\/]+\\|[ \t]+") d in
     let dlist_int = List.map int_of_string dlist in
         match dlist_int with
-        |m::d::y::h::mi::s::_ -> {tm_mon=m ; tm_mday=d; tm_year=y; tm_hour=h; tm_min=mi; tm_sec=s; tm_wday=0; tm_yday=0; tm_isdst=false}, false
-        |m::d::y::_ -> {tm_mon=m ; tm_mday=d; tm_year=y; tm_hour=0; tm_min=0; tm_sec =0;tm_wday=0;tm_yday=0;tm_isdst=false}, true
-        |m::d::_ -> {tm_mon=m ; tm_mday=d; tm_year=((localtime(gettimeofday())).tm_year+1900); tm_hour=0; tm_min=0; tm_sec =0;tm_wday=0;tm_yday=0;tm_isdst=false}, true
+        |m::d::y::h::mi::s::_ -> {tm_mon=m+1 ; tm_mday=d; tm_year=y+1900; tm_hour=h; tm_min=mi; tm_sec=s; tm_wday=0; tm_yday=0; tm_isdst=false}, false
+        |m::d::y::_ -> {tm_mon=m+1; tm_mday=d; tm_year=y+1900; tm_hour=0; tm_min=0; tm_sec =0;tm_wday=0;tm_yday=0;tm_isdst=false}, true
+        |m::d::_ -> {tm_mon=m+1 ; tm_mday=d; tm_year=((localtime(gettimeofday())).tm_year+1900); tm_hour=0; tm_min=0; tm_sec =0;tm_wday=0;tm_yday=0;tm_isdst=false}, true
     
 (* Returns date and date a day later *)
 let getRange (t:tm) : tm*tm=
@@ -57,23 +57,3 @@ let rec process_string_list (slst:string list) (acc:string list) (llst:lumber li
 
 let txtToLumberList txt =
     (List.rev(process_string_list (read_lines txt) [] []))
-
-(* let get_month m =
-    match m with
-    | 0 -> "January"
-    | 1 -> "February"
-    | 2 -> "March"
-    | 3 -> "April"
-    | 4 -> "May" 
-    | 5 -> "June"
-    | 6 -> "July"
-    | 7 -> "August"
-    | 8 -> "September"
-    | 9 -> "October"
-    | 10 -> "November"
-    | 11 -> "December"
-    | _ -> raise (Failure "Not a valid month") *)
-(* 
-let format_date d:string =
-    (string_of_int (d.month+1)) ^ "/" ^ (string_of_int d.day) ^ "/" ^ (string_of_int (d.year+1900) )
-    ^ " " ^ (string_of_int d.hour) ^ ":" ^ (string_of_int d.minute) ^ ":" ^ (string_of_int d.second) *)

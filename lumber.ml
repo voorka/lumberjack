@@ -11,15 +11,17 @@ let compare (old_date:tm) (new_date:tm) =
     else if old_time > new_time then GT
     else LT
 
-
+(*  Returns height of tree *)
 let height t =
     match t with
     | Leaf -> 0
     | Node(_,_,_,h) -> h
 
+(*  Returns height different of 2 trees *)
 let height_difference l r =
     Pervasives.abs(height l - height r)
 
+(*  Rotates a tree left or right *)
 let rec rotate tree = 
     match tree with 
     | Node(z ,z_l, Node(y, y_l, Node(x,x_l, x_r, x_h), y_h), z_h) ->
@@ -32,12 +34,14 @@ let rec rotate tree =
         rotate(Node(z, z_l, Node(x,x_l, Node(y, x_r, y_r, y_h+1),x_h-1), z_h))
     |_ -> raise (Failure "Did not match rotation cases")
 
+(*  Balances an input tree based on AVL rules *)
 let rec balance tree = 
     match tree with
     | Leaf -> tree
     | Node(t,l,r,h) -> if ((height_difference l r) > 1) then (rotate tree)
-                       else tree
+        else tree
 
+(*  Adds lumber to tree *)
 let rec addLog tree lum =
     let d = lum.date in
       match tree with
@@ -48,9 +52,11 @@ let rec addLog tree lum =
         | LT -> balance(Node({date=old_d; note=old_n; tags=old_tags}, l, (addLog r lum), h+1))
         | GT -> balance(Node({date=old_d; note=old_n; tags=old_tags}, (addLog l lum), r, h+1))
 
+(*  Adds list of lumber to tree *)
 let addLogs llist :tree =
     List.fold_left (addLog) Leaf llist  
 
+(*  Returns node from tree with date *)
 let rec getLog date tree = 
       match tree with
       | Leaf -> None
@@ -60,6 +66,7 @@ let rec getLog date tree =
         | LT -> getLog date r
         | GT -> getLog date l
 
+(*  Returns list of nodes between dates in reverse order. See below*)
 let rec getLogs dateBegin dateEnd tree (acc:lumber list)= 
       match tree with
       | Leaf -> acc
@@ -74,6 +81,7 @@ let rec getLogs dateBegin dateEnd tree (acc:lumber list)=
                 | GT -> getLogs dateBegin dateEnd l acc
         end
 
+(*  Returns list of nodes between dates in tree *)
 let getRangeLogs dateBegin dateEnd tree= 
     List.rev (getLogs dateBegin dateEnd tree [])
 

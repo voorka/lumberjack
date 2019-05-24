@@ -5,19 +5,23 @@ open Init
 open Types
 open Arg
 
+(* Prints node option. For single notecase *)
 let display_note_option note =
     match note with
     |Some x -> print_endline("Found note: "); print_endline(x.note); 
     |None -> print_endline("Did not find a note")
 
+(* Prints list of notes *)
 let rec display_note note_list =
     match note_list with
     |h::t -> print_endline("Found note: "); print_endline(h.note); display_note t
     | _ -> print_endline("Did not find any more notes")
 
+(* Prints notes in range beginDate to endDate  *)
 let print_range_dates (beginDate:tm) (endDate:tm) = 
     display_note (Lumber.getRangeLogs beginDate endDate !Init.currentTreeref)
 
+(* Prints range of notes from string input of form MM/DD/YYYY//HH:MM:SS-MM/DD/YYYY//HH:MM:SS *)
 let print_range_note x =
     let dates = Str.split (Str.regexp "-") x in
 
@@ -31,6 +35,7 @@ let print_range_note x =
                         print_range_dates (date_first) (date_second)
         | _ -> print_endline("Date range must be of form MM/DD/YYYY//HH:MM:SS-MM/DD/YYYY//HH:MM:SS")
 
+(* Prints notes from input string. If only specifies to the day, prints entire day *)
 let print_note x =
     let d = Parser.extractDate x in
         if (snd d) then begin
@@ -39,6 +44,7 @@ let print_note x =
                 end
         else display_note_option (Lumber.getLog (fst (Parser.extractDate x)) !Init.currentTreeref)
     
+(* Prints all notes from 0/0 to today *)
 let print_all () =
     print_range_dates  (fst (Parser.extractDate "0/0/0")) Parser.getDate
 
