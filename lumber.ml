@@ -1,13 +1,6 @@
 open Parser
 open Pervasives
-
-type lumber = {
-    date: date;
-    note: string;
-    tags: string list;
-}
-
-type comparison = EQ | LT | GT
+open Types
 
 (* Returns if old_date is [EQ|LT|GT] new_date *)
 let compare old_date new_date =
@@ -39,11 +32,6 @@ let compare old_date new_date =
                 else GT
             else if (cmp_year < 0) then LT
             else GT 
-
-(*  node , l_tree, r_tree, height *)
-type tree = 
-    | Leaf
-    | Node of lumber * tree * tree * int
 
 let height t =
     match t with
@@ -83,3 +71,13 @@ let rec addLog tree lum =
 
 let addLogs llist :tree =
     List.fold_left (addLog) Leaf llist  
+
+let rec getLog date tree = 
+      match tree with
+      | Leaf -> None
+      | Node({date=old_d; note=old_n; tags=old_tags}, l, r, h) ->
+        match (compare old_d date) with
+        | EQ -> Some {date=old_d; note=old_n; tags=old_tags}
+        | LT -> getLog date r
+        | GT -> getLog date l
+

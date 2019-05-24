@@ -1,16 +1,9 @@
-type verb = Get
+open Types
 
-type date = {
-    month: int;
-    day: int;
-    year: int;
-    hour: int;
-    minute: int;
-    second: int;
-}
-type target = Date of date | Obj of string
+val set_date_ref: string -> unit
+val get_date_ref: string ref
+val parse: string -> command
 
-type command = {
-    verb_word: verb;
-    target: target;
-}
+val txtToLumberList: string -> lumber list
+
+val extractDate: string -> date
