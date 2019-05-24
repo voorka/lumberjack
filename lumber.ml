@@ -81,3 +81,22 @@ let rec getLog date tree =
         | LT -> getLog date r
         | GT -> getLog date l
 
+let rec getLogs dateBegin dateEnd tree (acc:lumber list)= 
+      match tree with
+      | Leaf -> acc
+      | Node({date=old_d; note=old_n; tags=old_tags}, l, r, h) ->
+        begin
+            match (compare old_d dateBegin) with
+            | EQ -> getLogs dateBegin dateEnd r ({date=old_d; note=old_n; tags=old_tags}::acc)
+            | LT -> getLogs dateBegin dateEnd r acc
+            | GT -> match (compare old_d dateEnd) with
+                | EQ -> getLogs dateBegin dateEnd l ({date=old_d; note=old_n; tags=old_tags}::acc)
+                | LT -> getLogs dateBegin dateEnd r (getLogs dateBegin dateEnd l ({date=old_d; note=old_n; tags=old_tags}::acc))
+                | GT -> getLogs dateBegin dateEnd l acc
+        end
+
+let getRangeLogs dateBegin dateEnd tree= 
+    List.rev (getLogs dateBegin dateEnd tree [])
+
+
+

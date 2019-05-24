@@ -2,8 +2,6 @@ open Str
 open Types
 open Unix
 
-let date_ref = ref ""
-
 (* Takes in a file name and returns the lines in that file *)
 let read_lines name : string list =
   let ic = open_in name in
@@ -20,7 +18,7 @@ let format_date d:string =
 
 (* Takes in a string of the form DD/MM/YYYY HH:MM:SS and converts to date type*)
 let extractDate d:date =
-    let dlist = Str.split (Str.regexp ":\\|/\\|[ \t]+") d in
+    let dlist = Str.split (Str.regexp ":\\|[\\/]+\\|[ \t]+") d in
     let dlist_int = List.map int_of_string dlist in
         match dlist_int with
         |m::d::y::h::mi::s::_ ->
@@ -30,12 +28,6 @@ let extractDate d:date =
 let getDate:date =
     let tm = localtime(gettimeofday()) in
     {month= tm.tm_mon; day = tm.tm_mday; year=tm.tm_year; hour=tm.tm_hour; minute=tm.tm_min; second = tm.tm_sec}
-
-let set_date_ref (s:string):unit =
-    date_ref := s
-
-let get_date_ref : string ref =
-    date_ref
 
 (* Takes in string list, appends current date, and converts to lumber*)
 let convert_to_new_lumber (note:string list) : lumber =
