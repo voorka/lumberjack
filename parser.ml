@@ -23,7 +23,7 @@ let extractDate d =
         match dlist_int with
         |m::d::y::h::mi::s::_ -> {tm_mon=m ; tm_mday=d; tm_year=y; tm_hour=h; tm_min=mi; tm_sec=s; tm_wday=0; tm_yday=0; tm_isdst=false}, false
         |m::d::y::_ -> {tm_mon=m; tm_mday=d; tm_year=y; tm_hour=0; tm_min=0; tm_sec =0;tm_wday=0;tm_yday=0;tm_isdst=false}, true
-        |m::d::_ -> {tm_mon=m; tm_mday=d; tm_year=((localtime(gettimeofday())).tm_year); tm_hour=0; tm_min=0; tm_sec =0;tm_wday=0;tm_yday=0;tm_isdst=false}, true
+        |m::d::_ -> {tm_mon=m; tm_mday=d; tm_year=((localtime(gettimeofday())).tm_year+1900); tm_hour=0; tm_min=0; tm_sec =0;tm_wday=0;tm_yday=0;tm_isdst=false}, true
     
 (* Returns date and date a day later *)
 let getRange (t:tm) : tm*tm=
