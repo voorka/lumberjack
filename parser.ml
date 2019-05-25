@@ -19,7 +19,7 @@ let format_date d:string =
 (* Takes in a string of the form DD/MM/YYYY HH:MM:SS and converts to date type*)
 let extractDate d =
     let dlist = Str.split (Str.regexp ":\\|[\\/]+\\|[ \t]+") d in
-    let dlist_int = List.map int_of_string dlist in
+    let dlist_int = try List.map int_of_string dlist with _ -> raise (Failure("Could not parse: "^(List.hd dlist))) in
         match dlist_int with
         |m::d::y::h::mi::s::_ -> {tm_mon=m ; tm_mday=d; tm_year=y; tm_hour=h; tm_min=mi; tm_sec=s; tm_wday=0; tm_yday=0; tm_isdst=false}, false
         |m::d::y::_ -> {tm_mon=m; tm_mday=d; tm_year=y; tm_hour=0; tm_min=0; tm_sec =0;tm_wday=0;tm_yday=0;tm_isdst=false}, true
@@ -50,9 +50,10 @@ let convert_to_lumber (note:string list) : lumber =
 seprated by empty lines that begin with a line of the form DD/MM/YYYY HH:MM:SS *)
 let rec process_string_list (slst:string list) (acc:string list) (llst:lumber list): lumber list= 
     match slst with
-    | ""::t -> process_string_list t [] ((convert_to_lumber acc)::llst )
+    | ""::t -> (try (process_string_list t [] ((convert_to_lumber acc)::llst ))
+               with _ -> (process_string_list t [] llst))
     | x::t -> process_string_list t (acc@[x]) llst
-    | _ -> if acc == [] then llst else (convert_to_lumber acc)::llst 
+    | _ -> if acc == [] then llst else try ((convert_to_lumber acc)::llst) with _ -> []
 
 
 let txtToLumberList txt =
