@@ -46,10 +46,10 @@ let print_note x =
     
 (* Prints all notes from 0/0 to today *)
 let print_all () =
-    print_range_dates  (fst (Parser.extractDate "0/0/0")) Parser.getDate
+        print_range_dates  (fst (Parser.extractDate "0/0/0")) Parser.getDate
 
 let find_occurences x =
-    display_note (Lumber.find_all_notes x !Init.currentTreeref)
+        display_note (Lumber.find_all_notes x !Init.currentTreeref)
 
 let print_metrics () :unit=
 let (date_freq:(tm*int)list) = Lumber.collect_metrics !Init.currentTreeref in
@@ -61,6 +61,9 @@ let rec print_metric (date_freq:(tm*int)list): unit=
         in
         print_metric date_freq
 
+let print_count keyword =
+        print_endline(keyword^" occurs "^(string_of_int (List.length (Lumber.find_all_notes keyword !Init.currentTreeref)))^" times")
+
 let main (args: string array) =
   if Array.length args < 2 then raise (Failure "No text file specified")
   else
@@ -70,6 +73,7 @@ let main (args: string array) =
     ("--get-all", Arg.Unit print_all, "Prints all notes" );
     ("-find", Arg.String find_occurences, "Finds all notes containing keyword");
     ("--metrics", Arg.Unit print_metrics, "Prints character count metrics from past months");
+    ("--find-count", Arg.String print_count, "Prints the number of notes containing keyword");
     ]in
     let usage_msg = "Currently supported options include:" in
     Arg.parse speclist print_endline usage_msg
