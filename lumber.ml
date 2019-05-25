@@ -5,8 +5,8 @@ open Unix
 
 (* Returns if old_date is [EQ|LT|GT] new_date *)
 let compare (old_date:tm) (new_date:tm) =
-    let old_time = mktime old_date in  
-    let new_time = mktime new_date in
+    let old_time = mktime {old_date with tm_year = old_date.tm_year - 1900; tm_mon = old_date.tm_mon-1} in  
+    let new_time = mktime {new_date with tm_year = new_date.tm_year - 1900; tm_mon = new_date.tm_mon-1} in
     if old_time == new_time then EQ
     else if old_time > new_time then GT
     else LT
@@ -101,13 +101,13 @@ let find_all_notes keyword tree =
 
 let rec get_earliest_date tree :tm= 
         match tree with
-        | Leaf -> let current_tm = getDate in {current_tm with tm_year = current_tm.tm_year + 1900;  tm_mon = current_tm.tm_mon + 1}
+        | Leaf -> getDate
         | Node(d,l,_,1)-> d.date
         | Node(d,l,_,_) -> get_earliest_date l
 
 let rec get_latest_date tree :tm= 
         match tree with
-        | Leaf -> let current_tm = getDate in {current_tm with tm_year = current_tm.tm_year + 1900;  tm_mon = current_tm.tm_mon + 1}
+        | Leaf -> getDate
         | Node(d,_,r,1)-> d.date
         | Node(d,_,r,_) -> get_latest_date r
 

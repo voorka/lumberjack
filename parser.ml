@@ -32,7 +32,8 @@ let getRange (t:tm) : tm*tm=
 
 (* returns a date object of current time *)
 let getDate:tm =
-    localtime(gettimeofday())
+    let current_tm = localtime(gettimeofday()) in
+    {current_tm with tm_year = current_tm.tm_year +1900; tm_mon = current_tm.tm_mon + 1 }
 
 (* Takes in string list, appends current date, and converts to lumber*)
 let convert_to_new_lumber (note:string list) : lumber =
