@@ -8,13 +8,13 @@ open Arg
 (* Prints node option. For single notecase *)
 let display_note_option note =
     match note with
-    |Some x -> print_endline("Found note: "); print_endline(x.note); 
+    |Some x -> print_endline(x.note); 
     |None -> print_endline("Did not find a note")
 
 (* Prints list of notes *)
 let rec display_note note_list =
     match note_list with
-    |h::t -> print_endline("Found note: "); print_endline(h.note); display_note t
+    |h::t -> print_endline(h.note^"\n"); display_note t
     | _ -> print_endline("Did not find any more notes")
 
 (* Prints notes in range beginDate to endDate  *)
