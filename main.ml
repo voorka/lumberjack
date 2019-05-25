@@ -19,7 +19,7 @@ let rec display_note note_list =
 
 (* Prints notes in range beginDate to endDate  *)
 let print_range_dates (beginDate:tm) (endDate:tm) = 
-    display_note (Lumber.getRangeLogs beginDate endDate !Init.currentTreeref)
+    display_note (Lumber.get_range_logs beginDate endDate !Init.currentTreeref)
 
 (* Prints range of notes from string input of form MM/DD/YYYY//HH:MM:SS-MM/DD/YYYY//HH:MM:SS *)
 let print_range_note x =
@@ -42,11 +42,14 @@ let print_note x =
                 match (Parser.getRange (fst d)) with
                 | (h,t) -> print_range_dates (h:tm) (t:tm)
                 end
-        else display_note_option (Lumber.getLog (fst (Parser.extractDate x)) !Init.currentTreeref)
+        else display_note_option (Lumber.get_log (fst (Parser.extractDate x)) !Init.currentTreeref)
     
 (* Prints all notes from 0/0 to today *)
 let print_all () =
     print_range_dates  (fst (Parser.extractDate "0/0/0")) Parser.getDate
+
+let find_occurences x =
+    display_note (Lumber.find_all_notes x !Init.currentTreeref)
 
 let main (args: string array) =
   if Array.length args < 2 then raise (Failure "No text file specified")
@@ -55,6 +58,7 @@ let main (args: string array) =
     ("--get-date",  Arg.String print_note, "Prints note from date to stdout. Date must be of form MM/DD/YYYY//HH:MM:SS" );
     ("--get-dates", Arg.String print_range_note, "Prints note from date range to stdout. Date range must be of form MM/DD/YYYY//HH:MM:SS-MM/DD/YYYY//HH:MM:SS" );
     ("--get-all", Arg.Unit print_all, "Prints all notes" );
+    ("-find", Arg.String find_occurences, "Finds all notes containing keyword");
     ]in
     let usage_msg = "Currently supported options include:" in
     Arg.parse speclist print_endline usage_msg

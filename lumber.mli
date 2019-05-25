@@ -1,10 +1,12 @@
 open Types
 open Unix
 
-val addLog: tree -> lumber -> tree
+val add_log: tree -> lumber -> tree
 
-val addLogs: lumber list -> tree
+val add_logs: lumber list -> tree
 
-val getLog: tm -> tree -> lumber option
+val get_log: tm -> tree -> lumber option
 
-val getRangeLogs: tm -> tm -> tree -> lumber list
+val get_range_logs: tm -> tm -> tree -> lumber list
+
+val find_all_notes: string -> tree -> lumber list

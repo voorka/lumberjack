@@ -3,10 +3,10 @@ open Lumber
 open Unix
 open Types
 
-let currentTreeref = ref (Lumber.addLogs [] )
+let currentTreeref = ref (Lumber.add_logs [] )
 
-let initTree lumberList=
-    currentTreeref := (Lumber.addLogs lumberList )
+let init_tree lumberList=
+    currentTreeref := (Lumber.add_logs lumberList )
 
 let init txt =
-    initTree (Parser.txtToLumberList txt)
+    init_tree (Parser.txtToLumberList txt)

@@ -42,48 +42,62 @@ let rec balance tree =
         else tree
 
 (*  Adds lumber to tree *)
-let rec addLog tree lum =
+let rec add_log tree lum =
     let d = lum.date in
       match tree with
       | Leaf -> Node (lum, Leaf, Leaf, 1)
       | Node({date=old_d; note=old_n; tags=old_tags}, l, r, h) ->
         match (compare old_d d) with
         | EQ -> raise (Failure "Two notes have the same time. Something is wrong.")
-        | LT -> balance(Node({date=old_d; note=old_n; tags=old_tags}, l, (addLog r lum), h+1))
-        | GT -> balance(Node({date=old_d; note=old_n; tags=old_tags}, (addLog l lum), r, h+1))
+        | LT -> balance(Node({date=old_d; note=old_n; tags=old_tags}, l, (add_log r lum), h+1))
+        | GT -> balance(Node({date=old_d; note=old_n; tags=old_tags}, (add_log l lum), r, h+1))
 
 (*  Adds list of lumber to tree *)
-let addLogs llist :tree =
-    List.fold_left (addLog) Leaf llist  
+let add_logs llist :tree =
+    List.fold_left (add_log) Leaf llist  
 
 (*  Returns node from tree with date *)
-let rec getLog date tree = 
+let rec get_log date tree = 
       match tree with
       | Leaf -> None
       | Node({date=old_d; note=old_n; tags=old_tags}, l, r, h) ->
         match (compare old_d date) with
         | EQ -> Some {date=old_d; note=old_n; tags=old_tags}
-        | LT -> getLog date r
-        | GT -> getLog date l
+        | GT -> get_log date l
+        | LT -> get_log date r
 
 (*  Returns list of nodes between dates in reverse order. See below*)
-let rec getLogs dateBegin dateEnd tree (acc:lumber list)= 
+let rec get_logs dateBegin dateEnd tree (acc:lumber list)= 
       match tree with
       | Leaf -> acc
       | Node({date=old_d; note=old_n; tags=old_tags}, l, r, h) ->
         begin
             match (compare old_d dateBegin) with
-            | EQ -> getLogs dateBegin dateEnd r ({date=old_d; note=old_n; tags=old_tags}::acc)
-            | LT -> getLogs dateBegin dateEnd r acc
+            | EQ -> get_logs dateBegin dateEnd r ({date=old_d; note=old_n; tags=old_tags}::acc)
+            | LT -> get_logs dateBegin dateEnd r acc
             | GT -> match (compare old_d dateEnd) with
-                | EQ -> getLogs dateBegin dateEnd l ({date=old_d; note=old_n; tags=old_tags}::acc)
-                | LT -> getLogs dateBegin dateEnd r (getLogs dateBegin dateEnd l ({date=old_d; note=old_n; tags=old_tags}::acc))
-                | GT -> getLogs dateBegin dateEnd l acc
+                | EQ -> get_logs dateBegin dateEnd l ({date=old_d; note=old_n; tags=old_tags}::acc)
+                | LT -> get_logs dateBegin dateEnd r (get_logs dateBegin dateEnd l ({date=old_d; note=old_n; tags=old_tags}::acc))
+                | GT -> get_logs dateBegin dateEnd l acc
         end
 
 (*  Returns list of nodes between dates in tree *)
-let getRangeLogs dateBegin dateEnd tree= 
-    List.rev (getLogs dateBegin dateEnd tree [])
+let get_range_logs dateBegin dateEnd tree= 
+    List.rev (get_logs dateBegin dateEnd tree [])
+
+let find_all_notes keyword tree =
+        let rec find_all (keyword:string) tree (acc:lumber list) =
+        let find lumber :lumber list=
+                try (Str.search_forward (Str.regexp_string keyword) lumber.note 0); (lumber::acc)
+                with Not_found -> acc
+                in
+        match tree with
+        | Leaf -> acc
+        | Node({date=old_d; note=old_n; tags=old_tags}, l, r, h) ->
+                let l_acc = find_all keyword l (find {date=old_d; note=old_n; tags=old_tags}) in
+                find_all keyword r l_acc
+        in
+        find_all keyword tree []
 
 
 
