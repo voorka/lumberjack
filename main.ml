@@ -69,7 +69,7 @@ let main (args: string array) =
     ("--get-dates", Arg.String print_range_note, "Prints note from date range to stdout. Date range must be of form MM/DD/YYYY//HH:MM:SS-MM/DD/YYYY//HH:MM:SS" );
     ("--get-all", Arg.Unit print_all, "Prints all notes" );
     ("-find", Arg.String find_occurences, "Finds all notes containing keyword");
-    ("--metrics", Arg.Unit print_metrics, "Prints metrics from past months");
+    ("--metrics", Arg.Unit print_metrics, "Prints character count metrics from past months");
     ]in
     let usage_msg = "Currently supported options include:" in
     Arg.parse speclist print_endline usage_msg
