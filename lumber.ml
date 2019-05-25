@@ -99,5 +99,49 @@ let find_all_notes keyword tree =
         in
         find_all keyword tree []
 
+let rec get_earliest_date tree :tm= 
+        match tree with
+        | Leaf -> let current_tm = getDate in {current_tm with tm_year = current_tm.tm_year + 1900;  tm_mon = current_tm.tm_mon + 1}
+        | Node(d,l,_,1)-> d.date
+        | Node(d,l,_,_) -> get_earliest_date l
+
+let rec get_latest_date tree :tm= 
+        match tree with
+        | Leaf -> let current_tm = getDate in {current_tm with tm_year = current_tm.tm_year + 1900;  tm_mon = current_tm.tm_mon + 1}
+        | Node(d,_,r,1)-> d.date
+        | Node(d,_,r,_) -> get_latest_date r
+
+let get_month_list e l :tm list=
+let empty_date = {tm_mon=0 ; tm_mday=1; tm_year=0; tm_hour=0; tm_min=0; tm_sec=0;tm_wday=0;tm_yday=0;tm_isdst=false} in
+let rec get_months e l acc =
+        if(e.tm_year == l.tm_year) then
+                if( e.tm_mon == l.tm_mon) then ({empty_date with tm_mon = e.tm_mon; tm_year = e.tm_year}::acc)
+                else get_months e {l with tm_mon= l.tm_mon - 1} ({empty_date with tm_mon = l.tm_mon; tm_year = l.tm_year}::acc)
+        else if (l.tm_mon == 1) then get_months e {l with tm_mon= 12; tm_year = l.tm_year - 1} ({empty_date with tm_mon = l.tm_mon; tm_year = l.tm_year}::acc)
+        else  get_months e {l with tm_mon= l.tm_mon - 1} ({empty_date with tm_mon = l.tm_mon; tm_year = l.tm_year}::acc)
+        in
+        get_months e l []
+
+(* Returns length of input lumber *)
+let get_character_count (x:int) (lumber:lumber): int=
+        x + (String.length lumber.note)
+
+let rec get_character_count_list (months:tm list) tree : (tm*int) list=
+        let rec get_character_counts months acc =
+                match months with
+                | h::t -> let frequency = List.fold_left (get_character_count) 0 (get_range_logs h {h with tm_mon = h.tm_mon + 1} tree) in
+                        get_character_counts t ((h, frequency):: acc)
+                | _ -> acc
+        in 
+        get_character_counts months []
+
+let collect_metrics tree=
+        let earliest = (get_earliest_date tree) in
+        let latest = (get_latest_date tree) in 
+        let month_list = get_month_list earliest latest in 
+        List.rev (get_character_count_list month_list tree)
+
+
+
 
 
