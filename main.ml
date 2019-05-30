@@ -46,7 +46,7 @@ let print_note x =
     
 (* Prints all notes from 0/0 to today *)
 let print_all () =
-        print_range_dates  (fst (Parser.extractDate "0/0/0")) Parser.getDate
+        print_range_dates  (Lumber.get_earliest_date !Init.currentTreeref) Parser.getDate
 
 let find_occurences x =
         display_note (Lumber.find_all_notes x !Init.currentTreeref)

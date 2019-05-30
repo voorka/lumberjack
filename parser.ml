@@ -53,7 +53,7 @@ let convert_to_lumber (note:string list) : lumber =
 
 (* Takes in string list and returns lumber list. Assumes list consists of string lists 
 seprated by empty lines that begin with a line of the form DD/MM/YYYY HH:MM:SS *)
-let rec process_string_list (slst:string list) (acc:string list) (llst:lumber list): lumber list= 
+let rec process_string_list (slst:string list) (acc:string list) (llst:lumber list): lumber list=
     match slst with
     | ""::t -> if acc == [] then process_string_list t [] llst 
         else process_string_list t [] ((convert_to_lumber acc)::llst )
