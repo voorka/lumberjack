@@ -13,8 +13,10 @@ let read_lines name : string list =
   loop []
 
 let format_date d:string =
+    try 
     (string_of_int (d.tm_mon)) ^ "/" ^ (string_of_int d.tm_mday) ^ "/" ^ (string_of_int (d.tm_year))
     ^ " " ^ (string_of_int d.tm_hour) ^ ":" ^ (string_of_int d.tm_min) ^ ":" ^ (string_of_int d.tm_sec)
+    with _ -> raise (Failure("Could not convert string to int"))
 
 (* Takes in a string of the form DD/MM/YYYY HH:MM:SS and converts to date type*)
 let extractDate d =
@@ -24,11 +26,13 @@ let extractDate d =
         |m::d::y::h::mi::s::_ -> {tm_mon=m ; tm_mday=d; tm_year=y; tm_hour=h; tm_min=mi; tm_sec=s; tm_wday=0; tm_yday=0; tm_isdst=false}, false
         |m::d::y::_ -> {tm_mon=m; tm_mday=d; tm_year=y; tm_hour=0; tm_min=0; tm_sec =0;tm_wday=0;tm_yday=0;tm_isdst=false}, true
         |m::d::_ -> {tm_mon=m; tm_mday=d; tm_year=((localtime(gettimeofday())).tm_year+1900); tm_hour=0; tm_min=0; tm_sec =0;tm_wday=0;tm_yday=0;tm_isdst=false}, true
+        | _ -> raise (Failure("Date should have been matched. Tell Katy"))
     
 (* Returns date and date a day later *)
 let getRange (t:tm) : tm*tm=
     match t with
     |{tm_mon=m ; tm_mday=d; tm_year=y; tm_hour=0; tm_min=0; tm_sec=0;tm_wday=0;tm_yday=0;tm_isdst=false} -> (t,{tm_mon=m ; tm_mday=d+1; tm_year=y; tm_hour=0; tm_min=0; tm_sec =0;tm_wday=0;tm_yday=0;tm_isdst=false})
+    | _ -> raise (Failure("Cannot get range of non time object"))
 
 (* returns a date object of current time *)
 let getDate:tm =
@@ -44,17 +48,19 @@ let convert_to_new_lumber (note:string list) : lumber =
 (* Takes in string list with first string of the form DD/MM/YYYY HH:MM:SS and converts to lumber*)
 let convert_to_lumber (note:string list) : lumber =
     match note with
-    | h::t -> let d = fst (extractDate h) in {date=d; note=(List.fold_left (fun x y -> x ^ "\n" ^ y) (format_date d) t); tags=[]} 
+    | h::t -> let d = fst (extractDate h) in {date=d; note=(List.fold_left (fun x y -> x ^ "\n" ^ y) (format_date d) t); tags=[]}
     | _ -> raise (Failure "Empty note in convert to lumber")
 
 (* Takes in string list and returns lumber list. Assumes list consists of string lists 
 seprated by empty lines that begin with a line of the form DD/MM/YYYY HH:MM:SS *)
 let rec process_string_list (slst:string list) (acc:string list) (llst:lumber list): lumber list= 
     match slst with
-    | ""::t -> (try (process_string_list t [] ((convert_to_lumber acc)::llst ))
-               with _ -> (process_string_list t [] llst))
+    | ""::t -> if acc == [] then process_string_list t [] llst 
+        else process_string_list t [] ((convert_to_lumber acc)::llst )
+    (* | ""::t -> (try (process_string_list t [] ((convert_to_lumber acc)::llst ))
+               with _ -> (process_string_list t [] llst)) *)
     | x::t -> process_string_list t (acc@[x]) llst
-    | _ -> if acc == [] then llst else try ((convert_to_lumber acc)::llst) with _ -> []
+    | _ ->  if acc == [] then llst else try ((convert_to_lumber acc)::llst) with _ -> []
 
 
 let txtToLumberList txt =
