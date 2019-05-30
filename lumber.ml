@@ -5,8 +5,6 @@ open Unix
 
 (* Returns if old_date is [EQ|LT|GT] new_date *)
 let compare (old_date:tm) (new_date:tm) =
-    print_endline(Parser.format_date old_date);
-    print_endline(Parser.format_date new_date);
     let old_time = mktime {old_date with tm_year = old_date.tm_year - 1900; tm_mon = old_date.tm_mon-1} in  
     let new_time = mktime {new_date with tm_year = new_date.tm_year - 1900; tm_mon = new_date.tm_mon-1} in
     if old_time == new_time then EQ
