@@ -12,7 +12,7 @@ let display_note_option note =
     |None -> print_endline("Did not find a note")
 
 (* Prints list of notes *)
-let rec display_note note_list =
+let rec display_note (note_list:lumber list) =
     match note_list with
     |h::t -> print_endline(h.note^"\n"); display_note t
     | _ -> print_endline("Did not find any more notes")
@@ -49,7 +49,7 @@ let print_all () =
         print_range_dates  (Lumber.get_earliest_date !Init.currentTreeref) Parser.getDate
 
 let find_occurences x =
-        display_note (Lumber.find_all_notes x !Init.currentTreeref)
+        display_note (List.rev (Lumber.find_all_notes x !Init.currentTreeref))
 
 let print_metrics () :unit=
 let (date_freq:(tm*int)list) = Lumber.collect_metrics !Init.currentTreeref in
