@@ -88,7 +88,7 @@ let get_range_logs dateBegin dateEnd tree=
 let find_all_notes keyword tree =
         let rec find_all (keyword:string) tree (acc:lumber list) =
         let find lumber :lumber list=
-                try (Str.search_forward (Str.regexp_string_case_fold keyword) lumber.note 0); (lumber::acc)
+                try ignore (Str.search_forward (Str.regexp_string_case_fold keyword) lumber.note 0); (lumber::acc)
                 with Not_found -> acc
                 in
         match tree with
