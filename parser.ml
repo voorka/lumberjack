@@ -57,8 +57,6 @@ let rec process_string_list (slst:string list) (acc:string list) (llst:lumber li
     match slst with
     | ""::t -> if acc == [] then process_string_list t [] llst 
         else process_string_list t [] ((convert_to_lumber acc)::llst )
-    (* | ""::t -> (try (process_string_list t [] ((convert_to_lumber acc)::llst ))
-               with _ -> (process_string_list t [] llst)) *)
     | x::t -> process_string_list t (acc@[x]) llst
     | _ ->  if acc == [] then llst else try ((convert_to_lumber acc)::llst) with _ -> []
 

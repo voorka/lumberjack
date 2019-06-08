@@ -4,6 +4,7 @@ open Unix
 open Init
 open Types
 open Arg
+open Mail
 
 (* Prints node option. For single notecase *)
 let display_note_option note =
@@ -17,9 +18,12 @@ let rec display_note (note_list:lumber list) =
     |h::t -> print_endline(h.note^"\n"); display_note t
     | _ -> print_endline("Did not find any more notes")
 
+let get_range_dates (beginDate:tm) (endDate:tm) =
+        (Lumber.get_range_logs beginDate endDate !Init.currentTreeref)
+
 (* Prints notes in range beginDate to endDate  *)
 let print_range_dates (beginDate:tm) (endDate:tm) = 
-    display_note (Lumber.get_range_logs beginDate endDate !Init.currentTreeref)
+        display_note (get_range_dates beginDate endDate)
 
 (* Prints range of notes from string input of form MM/DD/YYYY//HH:MM:SS-MM/DD/YYYY//HH:MM:SS *)
 let print_range_note x =
@@ -43,7 +47,10 @@ let print_note x =
                 | (h,t) -> print_range_dates (h:tm) (t:tm)
                 end
         else display_note_option (Lumber.get_log (fst (Parser.extractDate x)) !Init.currentTreeref)
-    
+                
+let get_all () = 
+        print_endline (List.length (get_range_dates (Lumber.get_earliest_date !Init.currentTreeref) Parser.getDate) |> string_of_int)
+
 (* Prints all notes from 0/0 to today *)
 let print_all () =
         print_range_dates  (Lumber.get_earliest_date !Init.currentTreeref) Parser.getDate
@@ -73,6 +80,7 @@ let main (args: string array) =
     ("--get-all", Arg.Unit print_all, "Prints all notes" );
     ("-find", Arg.String find_occurences, "Finds all notes containing keyword");
     ("-metrics", Arg.Unit print_metrics, "Prints character count metrics from past months");
+    ("--note-count", Arg.Unit get_all, "Prints the total number of notes");
     ("--find-count", Arg.String print_count, "Prints the number of notes containing keyword");
     ]in
     let usage_msg = "Currently supported options include:" in

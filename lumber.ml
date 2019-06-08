@@ -7,7 +7,7 @@ open Unix
 let compare (old_date:tm) (new_date:tm) =
     let old_time = mktime {old_date with tm_year = old_date.tm_year - 1900; tm_mon = old_date.tm_mon-1} in  
     let new_time = mktime {new_date with tm_year = new_date.tm_year - 1900; tm_mon = new_date.tm_mon-1} in
-    if old_time == new_time then EQ
+    if old_time = new_time then EQ
     else if old_time > new_time then GT
     else LT
 
@@ -48,7 +48,7 @@ let rec add_log tree lum =
       | Leaf -> Node (lum, Leaf, Leaf, 1)
       | Node({date=old_d; note=old_n; tags=old_tags}, l, r, h) ->
         match (compare old_d d) with
-        | EQ -> raise (Failure "Two notes have the same time. Something is wrong.")
+        | EQ -> let offset_lumber = {d with tm_sec = d.tm_sec + 1} in balance(Node({date=old_d; note=old_n; tags=old_tags}, l, (add_log r {lum with date = offset_lumber} ), h+1))
         | LT -> balance(Node({date=old_d; note=old_n; tags=old_tags}, l, (add_log r lum), h+1))
         | GT -> balance(Node({date=old_d; note=old_n; tags=old_tags}, (add_log l lum), r, h+1))
 
@@ -76,7 +76,7 @@ let rec get_logs dateBegin dateEnd tree (acc:lumber list)=
             | EQ -> get_logs dateBegin dateEnd r ({date=old_d; note=old_n; tags=old_tags}::acc)
             | LT -> get_logs dateBegin dateEnd r acc
             | GT -> match (compare old_d dateEnd) with
-                | EQ -> get_logs dateBegin dateEnd l ({date=old_d; note=old_n; tags=old_tags}::acc)
+                | EQ -> get_logs dateBegin dateEnd l acc
                 | LT -> get_logs dateBegin dateEnd r (get_logs dateBegin dateEnd l ({date=old_d; note=old_n; tags=old_tags}::acc))
                 | GT -> get_logs dateBegin dateEnd l acc
         end
