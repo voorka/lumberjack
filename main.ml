@@ -4,7 +4,6 @@ open Unix
 open Init
 open Types
 open Arg
-open Mail
 
 (* Prints node option. For single notecase *)
 let display_note_option note =
