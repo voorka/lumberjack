@@ -85,19 +85,29 @@ let rec get_logs dateBegin dateEnd tree (acc:lumber list)=
 let get_range_logs dateBegin dateEnd tree= 
     List.rev (get_logs dateBegin dateEnd tree [])
 
+let sort_lumber (lumber : lumber list) : lumber list =
+        let int_compare x y =
+                match compare x.date y.date with
+                | EQ -> 0
+                | GT -> 1
+                | LT -> -1
+        in List.sort int_compare lumber
+
 let find_all_notes keyword tree =
         let rec find_all (keyword:string) tree (acc:lumber list) =
-        let find lumber :lumber list=
-                try ignore (Str.search_forward (Str.regexp_string_case_fold keyword) lumber.note 0); (lumber::acc)
-                with Not_found -> acc
+                let find lumber : lumber list=
+                        try ignore (Str.search_forward (Str.regexp_string_case_fold keyword) lumber.note 0); (lumber::acc)
+                        with Not_found -> acc
                 in
-        match tree with
-        | Leaf -> acc
-        | Node({date=old_d; note=old_n; tags=old_tags}, l, r, h) ->
-                let l_acc = find_all keyword l (find {date=old_d; note=old_n; tags=old_tags}) in
-                find_all keyword r l_acc
+                match tree with
+                | Leaf -> acc
+                | Node ({date=old_d; note=old_n; tags=old_tags}, l, r, h) ->
+                        let l_acc =
+                                find_all keyword l (find {date=old_d; note=old_n; tags=old_tags})
+                        in
+                        find_all keyword r l_acc
         in
-        find_all keyword tree []
+        find_all keyword tree [] |> sort_lumber
 
 let rec get_earliest_date tree :tm= 
         match tree with
