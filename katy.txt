@@ -2,31 +2,11 @@
 This is a test file
 This is what I did today
 
-5/8/2019 5:10:5
-hey kids
-
-5/9/2019 5:10:5
-hey Donna
-
-5/10/2019 5:10:5
-This is a test file
-This is what I did today Donna
-
-
 5/1/2020 5:10:5
 Katy
 
-
 2/10/2020 5:10:5
 Katy
-
-
-6/10/2020 5:10:5
-Katy
-
-3/1/2018 5:10:5
-Katy
-
 
 2/15/2020 5:10:5
 Katy
