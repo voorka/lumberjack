@@ -28,9 +28,9 @@ Lumberjack is an extension to make it easier to interact with this file and aggr
   * ```-metrics``` Prints number of characters for each month
   * ```--find-count <string>``` Prints number of occurences of string
   
- 
- There is likely a better way but this is how I connected the terminal to lumberjack.
  ### In the .bash_profile
+  There is likely a better way but this is how I connected the terminal to lumberjack.
+  
 ```alias ff='echo $'\n' >> ~/notes.txt;echo $'\n' >> ~/notes.txt; date "+%m/%d/%Y %H:%M:%S" >> ~/notes.txt; cat >> ~/notes.txt;'```
 
 ```alias ff-metrics='ocamlrun ~/lumberjack/main.byte -init ~/notes.txt -metrics'```
