@@ -15,7 +15,7 @@ Lumberjack is an extension to make it easier to interact with this file and aggr
 ### Quick Notes WorkFlow
 1. Type ff into your terminal
 2. Type the text of the note
-3. <kbd>ctrl</kbd>+<kbd>d</kbd> to end the note
+3. <kbd>ctrl</kbd>+<kbd>d</kbd>+<kbd>d</kbd> to end the note
 
 ### Lumberjack Extension Workflow 
   1. ```eval `opam config env```
