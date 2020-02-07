@@ -33,9 +33,9 @@ Lumberjack is an extension to make it easier to interact with this file and aggr
   
 ```alias ff='echo $'\n' >> ~/notes.txt;echo $'\n' >> ~/notes.txt; date "+%m/%d/%Y %H:%M:%S" >> ~/notes.txt; cat >> ~/notes.txt;'```
 
-```alias ff-metrics='ocamlrun ~/lumberjack/main.byte -init ~/notes.txt -metrics'```
-
 Add the functions you want from the commands above
+
+```alias ff-metrics='ocamlrun ~/lumberjack/main.byte -init ~/notes.txt -metrics'```
 
 ```alias ff-find=find```
 
