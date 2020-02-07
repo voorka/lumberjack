@@ -2,8 +2,8 @@
 ## A logical extension for quick note-taking.
 <br/>
 One of the main barriers to consistent note-taking is the time it takes to write a note.   
-The text file based note-taking method described below is quite fast.
-Lumberjack is an extension to make it easier to interact with this file and aggregate the notes you want efficiently.
+The text file based note-taking described below is quite fast.
+Lumberjack is an extension to make it easier to interact with this file and aggregate the notes you want.
 
 ### Quick Notes WorkFlow
 1. Type ff into your terminal
