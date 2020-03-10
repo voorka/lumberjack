@@ -18,7 +18,7 @@ Lumberjack is an extension to make it easier to interact with this file and aggr
 3. <kbd>ctrl</kbd>+<kbd>d</kbd>+<kbd>d</kbd> to end the note
 
 ### Lumberjack Extension Workflow 
-  1. ```eval `opam config env```
+  1. ```eval `opam config env` ```
   2. compile with ```make note```
   3. run commands `./main.byte -init ~/notes.txt <commands>`
   *  `--get-date 5/8 ` Prints all notes from this day. Date must be of form MM/DD/YYYY//HH:MM:SS
