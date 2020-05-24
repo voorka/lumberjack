@@ -128,28 +128,28 @@ let main (args : string array) =
   else
     let speclist =
       [
-        ("-init", Arg.String Init.init, "Creates Entry Tree");
-        ( "--get-date",
+        ("-i", Arg.String Init.init, "Creates Entry Tree");
+        ( "-gd",
           Arg.String print_note,
           "Prints note from date to stdout. Date must be of form \
            MM/DD/YYYY//HH:MM:SS" );
-        ( "--get-dates",
+        ( "-gds",
           Arg.String print_range_note,
           "Prints note from date range to stdout. Date range must be of form \
            MM/DD/YYYY//HH:MM:SS-MM/DD/YYYY//HH:MM:SS" );
-        ("--get-all", Arg.Unit print_all, "Prints all notes");
+        ("-ga", Arg.Unit print_all, "Prints all notes");
         ( "-find",
           Arg.String find_occurences,
           "Finds all notes containing keyword" );
         ( "-metrics",
           Arg.Unit print_metrics,
           "Prints character count metrics from past months" );
-        ("--note-count", Arg.Unit get_all, "Prints the total number of notes");
-        ( "--find-count",
+        ("-nc", Arg.Unit get_all, "Prints the total number of notes");
+        ( "-fc",
           Arg.String print_count,
           "Prints the number of notes containing keyword" );
-        ("-rand", Arg.Unit gen_rand, "Generate a random note template");
-        ("-note", Arg.Unit make_note, "Write a new note");
+        ("-r", Arg.Unit gen_rand, "Generate a random note template");
+        ("-n", Arg.Unit make_note, "Write a new note");
       ]
     in
     let usage_msg = "Currently supported options include:" in
