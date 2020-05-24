@@ -12,11 +12,6 @@ Lumberjack is an extension to make it easier to interact with this file and aggr
 4. compile with ```make note```
 5. Set up .bash_profile
 
-### Quick Notes WorkFlow
-1. Type ff into your terminal
-2. Type the text of the note
-3. <kbd>enter</kbd>
-  
  ### In the .bash_profile
 ```
 lumberjack () {
@@ -25,5 +20,23 @@ lumberjack () {
 
 alias ff=lumberjack
 ```
+### Quick Notes WorkFlow
+1. Type `ff -n` into your terminal
+2. Type the text of the note
+3. <kbd>enter</kbd>
+
+### Flags
+```
+  -f  <string>  Finds all notes containing <string>
+  -fc <string>  Prints the number of notes containing keyword
+  
+  -gd  Prints note from date. Date must be of form MM/DD/YYYY
+  -gds Prints note from date range. Date range must be of form MM/DD/YYYY-MM/DD/YYYY
+  -ga  Prints all notes
+  -m   Prints character count metrics from past months
+  -nc  Prints the total number of notes
+  -r   Generate a random note template
+  -n   Write a new note
+ ```
 
 
