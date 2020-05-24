@@ -103,17 +103,25 @@ let print_count keyword =
 let templates =
   [ "What did you learn today?"; "What is your favorite song today?" ]
 
+let make_lumber note =
+  let d : tm = getDate in
+  let note_with_metadata = "\n" ^ format_date d ^ "\n" ^ note in
+  write_lines !Init.file_ref [ note_with_metadata ];
+  let tree = !Init.currentTreeref in
+  let new_lum = { date = d; note = note_with_metadata; tags = [] } in
+  Init.currentTreeref := Lumber.add_log tree new_lum
+
+let make_note () =
+  let note = input_line Pervasives.stdin in
+  make_lumber note
+
 let gen_rand () =
   Random.self_init ();
   let template = List.nth templates (List.length templates |> Random.int) in
-  let d : tm = getDate in
   print_endline template;
   let resp = input_line Pervasives.stdin in
-  let note : string = "\n" ^ format_date d ^ "\n" ^ template ^ "\n" ^ resp in
-  let new_lum : lumber = { date = d; note; tags = [] } in
-  let tree = !Init.currentTreeref in
-  write_lines !Init.file_ref [ note ];
-  Init.currentTreeref := Lumber.add_log tree new_lum
+  let note : string = template ^ "\n" ^ resp in
+  make_lumber note
 
 let main (args : string array) =
   if Array.length args < 2 then raise (Failure "No text file specified")
@@ -140,7 +148,8 @@ let main (args : string array) =
         ( "--find-count",
           Arg.String print_count,
           "Prints the number of notes containing keyword" );
-        ("--rand", Arg.Unit gen_rand, "Generate a random note template");
+        ("-rand", Arg.Unit gen_rand, "Generate a random note template");
+        ("-note", Arg.Unit make_note, "Write a new note");
       ]
     in
     let usage_msg = "Currently supported options include:" in
