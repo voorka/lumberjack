@@ -1,12 +1,14 @@
 open Types
 open Unix
 
-val txtToLumberList: string -> lumber list
+val write_lines : string -> string list -> unit
 
-val extractDate: string -> tm * bool
+val txtToLumberList : string -> lumber list
 
-val getRange: tm -> tm*tm
+val extractDate : string -> tm * bool
 
-val getDate: tm
+val getRange : tm -> tm * tm
 
-val format_date: tm -> string
+val getDate : tm
+
+val format_date : tm -> string
