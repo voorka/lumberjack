@@ -100,10 +100,12 @@ let print_count keyword =
         (List.length (Lumber.find_all_notes keyword !Init.currentTreeref))
     ^ " times" )
 
-let template1 : string = "What did you learn today?"
+let templates =
+  [ "What did you learn today?"; "What is your favorite song today?" ]
 
 let gen_rand () =
-  let template = template1 in
+  Random.self_init ();
+  let template = List.nth templates (List.length templates |> Random.int) in
   let d : tm = getDate in
   print_endline template;
   let resp = input_line Pervasives.stdin in
