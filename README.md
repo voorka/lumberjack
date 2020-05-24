@@ -26,4 +26,17 @@ lumberjack () {
 alias ff=lumberjack
 ```
 
+### Flags
+```
+  -gd Prints note from date to stdout. Date must be of form MM/DD/YYYY
+  -gds Prints note from date range to stdout. Date range must be of form MM/DD/YYYY-MM/DD/YYYY
+  -ga Prints all notes
+  -f Finds all notes containing keyword
+  -m Prints character count metrics from past months
+  -nc Prints the total number of notes
+  -fc Prints the number of notes containing keyword
+  -r Generate a random note template
+  -n Write a new note
+ ```
+
 
