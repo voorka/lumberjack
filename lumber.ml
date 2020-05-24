@@ -79,6 +79,7 @@ let rec add_log tree lum =
                  r,
                  h + 1 )) )
 
+
 (*  Adds list of lumber to tree *)
 let add_logs llist : tree = List.fold_left add_log Leaf llist
 
