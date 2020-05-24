@@ -112,8 +112,12 @@ let make_lumber note =
   Init.currentTreeref := Lumber.add_log tree new_lum
 
 let make_note () =
-  let note = input_line Pervasives.stdin in
-  make_lumber note
+  let rec keep_writing notes =
+    let note = input_line Pervasives.stdin in
+    if String.length note < 1 then List.rev notes |> String.concat "\n"
+    else keep_writing (note :: notes)
+  in
+  keep_writing [] |> make_lumber
 
 let gen_rand () =
   Random.self_init ();
