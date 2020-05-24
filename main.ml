@@ -131,17 +131,14 @@ let main (args : string array) =
         ("-i", Arg.String Init.init, "Creates Entry Tree");
         ( "-gd",
           Arg.String print_note,
-          "Prints note from date to stdout. Date must be of form \
-           MM/DD/YYYY//HH:MM:SS" );
+          "Prints note from date to stdout. Date must be of form MM/DD/YYYY" );
         ( "-gds",
           Arg.String print_range_note,
           "Prints note from date range to stdout. Date range must be of form \
-           MM/DD/YYYY//HH:MM:SS-MM/DD/YYYY//HH:MM:SS" );
+           MM/DD/YYYY-MM/DD/YYYY" );
         ("-ga", Arg.Unit print_all, "Prints all notes");
-        ( "-find",
-          Arg.String find_occurences,
-          "Finds all notes containing keyword" );
-        ( "-metrics",
+        ("-f", Arg.String find_occurences, "Finds all notes containing keyword");
+        ( "-m",
           Arg.Unit print_metrics,
           "Prints character count metrics from past months" );
         ("-nc", Arg.Unit get_all, "Prints the total number of notes");
