@@ -2,8 +2,8 @@
 ## A logical extension for quick note-taking.
 <br/>
 One of the main barriers to consistent note-taking is the time it takes to write a note.   
-The text file based note-taking described below is quite fast.
-Lumberjack is an extension to make it easier to interact with this file and aggregate the notes you want.
+This one is quite fast.
+Lumberjack is an extension to make it easier to interface with this file and aggregate the notes you want.
 
 ### Setup Instructions
 1. Clone repository
@@ -37,6 +37,7 @@ alias ff=lumberjack
   -nc  Prints the total number of notes
   -r   Generate a random note template
   -n   Write a new note
+  -ly  Prints notes from today last year
  ```
 
 
