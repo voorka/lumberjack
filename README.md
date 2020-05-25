@@ -3,7 +3,7 @@
 <br/>
 One of the main barriers to consistent note-taking is the time it takes to write a note.   
 This one is quite fast.
-Lumberjack is an extension to make it easier to interact with this file and aggregate the notes you want.
+Lumberjack is an extension to make it easier to interface with this file and aggregate the notes you want.
 
 ### Setup Instructions
 1. Clone repository
