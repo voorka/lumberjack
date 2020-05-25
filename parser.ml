@@ -34,6 +34,12 @@ let write_lines file (note : string list) =
   List.iter (output_string oc) new_str_lst;
   close_out oc
 
+let format_date_dmy d : string =
+  try
+    string_of_int d.tm_mon ^ "/" ^ string_of_int d.tm_mday ^ "/"
+    ^ string_of_int d.tm_year
+  with _ -> raise (Failure "Could not convert string to int")
+
 let format_date d : string =
   try
     string_of_int d.tm_mon ^ "/" ^ string_of_int d.tm_mday ^ "/"

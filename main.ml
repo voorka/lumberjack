@@ -37,7 +37,7 @@ let make_graph () = ()
 let get_last_year () =
   let date : tm = getDate in
   let date_last_year = { date with tm_year = date.tm_year - 1 } in
-  format_date date_last_year |> find_occurences
+  format_date_dmy date_last_year |> find_occurences
 
 let main (args : string array) =
   if Array.length args < 2 then raise (Failure "No text file specified")
