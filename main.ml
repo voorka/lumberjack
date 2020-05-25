@@ -6,7 +6,7 @@ open Print
 open Parser
 
 let make_lumber note =
-  let d : tm = Parser.getDate in
+  let d : tm = getDate in
   let note_with_metadata = "\n" ^ format_date d ^ "\n" ^ note in
   write_lines !Init.file_ref [ note_with_metadata ];
   let tree = !Init.currentTreeref in
@@ -32,6 +32,13 @@ let gen_rand () =
   let note : string = template ^ "\n" ^ resp in
   make_lumber note
 
+let make_graph () = ()
+
+let get_last_year () =
+  let date : tm = getDate in
+  let date_last_year = { date with tm_year = date.tm_year - 1 } in
+  format_date date_last_year |> find_occurences
+
 let main (args : string array) =
   if Array.length args < 2 then raise (Failure "No text file specified")
   else
@@ -56,6 +63,8 @@ let main (args : string array) =
           "Prints the number of notes containing keyword" );
         ("-r", Arg.Unit gen_rand, "Generate a random note template");
         ("-n", Arg.Unit make_note, "Write a new note");
+        ("-g", Arg.Unit make_graph, "Print graph of usage");
+        ("-ly", Arg.Unit get_last_year, "Prints notes from today last year");
       ]
     in
     let usage_msg = "Currently supported options include:" in
