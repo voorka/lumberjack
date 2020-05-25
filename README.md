@@ -37,6 +37,7 @@ alias ff=lumberjack
   -nc  Prints the total number of notes
   -r   Generate a random note template
   -n   Write a new note
+  -ly  Prints notes from today last year
  ```
 
 
