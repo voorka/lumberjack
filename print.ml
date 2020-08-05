@@ -56,14 +56,6 @@ let print_note x =
     display_note_option
       (Lumber.get_log (fst (Parser.extractDate x)) !Init.currentTreeref)
 
-let get_all () =
-  print_endline
-    ( List.length
-        (get_range_dates
-           (Lumber.get_earliest_date !Init.currentTreeref)
-           Parser.getDate)
-    |> string_of_int )
-
 let find_occurences x =
   display_notes (List.rev (Lumber.find_all_notes x !Init.currentTreeref))
 

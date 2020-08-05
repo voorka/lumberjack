@@ -29,6 +29,12 @@ let write_tree () =
 let print_tree () =
   (fun x -> print_string (x.note ^ "\n\n")) |> inorder !Init.currentTreeref
 
+let node_count () =
+  let acc = ref 0 in
+  (fun _ -> acc := !acc + 1) |> inorder !Init.currentTreeref;
+  print_int !acc;
+  print_string " logs \n"
+
 let templates =
   [
     "What did you learn today?";
@@ -86,7 +92,7 @@ let main (args : string array) =
         ( "-m",
           Arg.Unit print_metrics,
           "Prints character count metrics from past months" );
-        ("-nc", Arg.Unit get_all, "Prints the total number of logs");
+        ("-nc", Arg.Unit node_count, "Prints the total number of logs");
         ( "-fc",
           Arg.String print_count,
           "Prints the number of notes containing keyword" );
