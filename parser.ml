@@ -15,33 +15,6 @@ let read_lines file : string list =
   in
   loop []
 
-let read_lines_preserve_whitespace file : string list =
-  let ic = open_in file in
-  let try_read () = try Some (input_line ic) with End_of_file -> None in
-  let rec loop acc =
-    match try_read () with
-    | Some s -> loop ("\n" :: s :: acc)
-    | None ->
-        close_in ic;
-        List.rev acc
-  in
-  loop []
-
-let write_lines file (note : string list) =
-  let strlst : string list = read_lines_preserve_whitespace file in
-  let new_str_lst : string list = strlst @ note in
-  let oc = open_out file in
-  List.iter (output_string oc) new_str_lst;
-  close_out oc
-
-let rec inorder tree (funs : lumber -> unit) =
-  match tree with
-  | Leaf -> ()
-  | Node (d, l, r, _) ->
-      inorder l funs;
-      funs d;
-      inorder r funs
-
 let format_date_dmy d : string =
   try
     string_of_int d.tm_mon ^ "/" ^ string_of_int d.tm_mday ^ "/"

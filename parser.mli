@@ -1,8 +1,6 @@
 open Types
 open Unix
 
-val write_lines : string -> string list -> unit
-
 val txtToLumberList : string -> lumber list
 
 val extractDate : string -> tm * bool
@@ -14,5 +12,3 @@ val getDate : tm
 val format_date : tm -> string
 
 val format_date_dmy : tm -> string
-
-val inorder : tree -> (lumber -> unit) -> unit

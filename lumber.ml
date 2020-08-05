@@ -121,38 +121,22 @@ let sort_lumber (lumber : lumber list) : lumber list =
   in
   List.sort int_compare lumber
 
-let find_all_notes keyword tree =
-  let rec find_all (keyword : string) tree (acc : lumber list) =
-    let find lumber : lumber list =
-      try
-        ignore
-          (Str.search_forward
-             (Str.regexp_string_case_fold keyword)
-             lumber.note 0);
-        lumber :: acc
-      with Not_found -> acc
-    in
-    match tree with
-    | Leaf -> acc
-    | Node ({ date = old_d; note = old_n; tags = old_tags }, l, r, h) ->
-        let l_acc =
-          find_all keyword l
-            (find { date = old_d; note = old_n; tags = old_tags })
-        in
-        find_all keyword r l_acc
-  in
-  find_all keyword tree [] |> sort_lumber
+let rec find keyword (acc : lumber list) (log : lumber) : lumber list =
+  try
+    ignore (Str.search_forward (Str.regexp_string_case_fold keyword) log.note 0);
+    log :: acc
+  with Not_found -> acc
 
 let rec get_earliest_date tree : tm =
   match tree with
   | Leaf -> getDate
-  | Node (d, l, _, 1) -> d.date
+  | Node (d, Leaf, _, _) -> d.date
   | Node (d, l, _, _) -> get_earliest_date l
 
 let rec get_latest_date tree : tm =
   match tree with
   | Leaf -> getDate
-  | Node (d, _, r, 1) -> d.date
+  | Node (d, _, Leaf, _) -> d.date
   | Node (d, _, r, _) -> get_latest_date r
 
 let rec get_last_log tree : lumber =
@@ -161,11 +145,11 @@ let rec get_last_log tree : lumber =
   | Node (d, _, Leaf, _) -> d
   | Node (_, _, r, _) -> get_last_log r
 
-let rec replace_log tree note : tree =
+let rec replace_last_log tree note : tree =
   match tree with
   | Leaf -> Leaf
-  | Node (d, l, Leaf, h) -> Node (note, l, Leaf, h)
-  | Node (d, l, r, h) -> Node (d, l, replace_log r note, h)
+  | Node (_, l, Leaf, h) -> Node (note, l, Leaf, h)
+  | Node (d, l, r, h) -> Node (d, l, replace_last_log r note, h)
 
 let get_month_list e l : tm list =
   let empty_date =

@@ -5,13 +5,41 @@ open Arg
 open Print
 open Parser
 
+let inorder (funs : 'a -> unit) =
+  let rec inorder_aux tree (funs : 'a -> unit) =
+    match !Init.currentTreeref with
+    | Leaf -> ()
+    | Node (d, l, r, _) ->
+        inorder_aux l funs;
+        funs d;
+        inorder_aux r funs
+  in
+  inorder_aux !Init.currentTreeref funs
+
+let inorder_acc acc (funs : 'a -> 'b -> 'a) =
+  let rec inorder_acc_aux tree acc (funs : 'a -> 'b -> 'a) =
+    match !Init.currentTreeref with
+    | Leaf -> acc
+    | Node (d, l, r, _) ->
+        let acc = inorder_acc_aux l acc funs in
+        let acc = funs acc d in
+        inorder_acc_aux r acc funs
+  in
+  inorder_acc_aux !Init.currentTreeref acc funs
+
+(* Write tree to a file *)
+let write_tree () =
+  let oc = open_out !Init.file_ref in
+  (fun x -> output_string oc (x.note ^ "\n\n")) |> inorder;
+  close_out oc
+
 let make_lumber note =
   let d : tm = getDate in
   let note_with_metadata = "\n" ^ format_date d ^ "\n" ^ note in
-  write_lines !Init.file_ref [ note_with_metadata ];
   let tree = !Init.currentTreeref in
-  let new_lum = { date = d; note = note_with_metadata; tags = [] } in
-  Init.currentTreeref := Lumber.add_log tree new_lum
+  let new_log = { date = d; note = note_with_metadata; tags = [] } in
+  Init.currentTreeref := Lumber.add_log tree new_log;
+  write_tree ()
 
 let rec read_input acc =
   let note = input_line Pervasives.stdin in
@@ -20,20 +48,22 @@ let rec read_input acc =
 
 let make_note () = read_input [] |> make_lumber
 
-(* Write tree to a file *)
-let write_tree () =
-  let oc = open_out !Init.file_ref in
-  (fun x -> output_string oc (x.note ^ "\n\n")) |> inorder !Init.currentTreeref;
-  close_out oc
-
-let print_tree () =
-  (fun x -> print_string (x.note ^ "\n\n")) |> inorder !Init.currentTreeref
+let print_tree () = (fun x -> print_string (x.note ^ "\n\n")) |> inorder
 
 let node_count () =
   let acc = ref 0 in
-  (fun _ -> acc := !acc + 1) |> inorder !Init.currentTreeref;
+  (fun _ -> acc := !acc + 1) |> inorder;
   print_int !acc;
   print_string " logs \n"
+
+let find_logs_with_keyword keyword : lumber list =
+  (fun acc x -> Lumber.find keyword acc x) |> inorder_acc []
+
+let find_logs x = find_logs_with_keyword x |> display_notes
+
+let print_count keyword =
+  find_logs_with_keyword keyword |> List.length |> print_int;
+  print_string "\n"
 
 let templates =
   [
@@ -65,13 +95,13 @@ let amend () =
   Print.display_note last_log;
   let addendum = read_input [ last_log.note ] in
   let new_log = { last_log with note = addendum } in
-  Init.currentTreeref := Lumber.replace_log tree new_log;
+  Init.currentTreeref := Lumber.replace_last_log tree new_log;
   write_tree ()
 
 let get_last_year () =
   let date : tm = getDate in
   let date_last_year = { date with tm_year = date.tm_year - 1 } in
-  format_date_dmy date_last_year |> find_occurences
+  format_date_dmy date_last_year |> find_logs
 
 let main (args : string array) =
   if Array.length args < 2 then raise (Failure "No text file specified")
@@ -79,16 +109,9 @@ let main (args : string array) =
     let speclist =
       [
         ("-i", Arg.String Init.init, "Creates Entry Tree");
-        ( "-gd",
-          Arg.String print_note,
-          "Prints note from date to stdout. Date must be of form MM/DD/YYYY" );
-        ( "-gds",
-          Arg.String print_range_note,
-          "Prints note from date range to stdout. Date range must be of form \
-           MM/DD/YYYY-MM/DD/YYYY" );
         ("-a", Arg.Unit amend, "Amend previous note");
-        ("-ga", Arg.Unit print_tree, "Prints all logs");
-        ("-f", Arg.String find_occurences, "Finds all logs containing keyword");
+        ("-p", Arg.Unit print_tree, "Prints all logs");
+        ("-f", Arg.String find_logs, "Finds all logs containing keyword");
         ( "-m",
           Arg.Unit print_metrics,
           "Prints character count metrics from past months" );
