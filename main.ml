@@ -22,15 +22,28 @@ let make_note () =
   keep_writing [] |> make_lumber
 
 let templates =
-  [ "What did you learn today?"; "What is your favorite song today?" ]
+  [
+    "What did you learn today?";
+    "What is your favorite song today?";
+    "One thing I would tell myself from a year ago is:";
+  ]
 
-let gen_rand () =
+let gratitude_journaling =
+  [
+    "Who are you grateful for today?"; "What in your life are you grateful for?";
+  ]
+
+let gen_prompt prompts =
   Random.self_init ();
-  let template = List.nth templates (List.length templates |> Random.int) in
+  let template = List.nth prompts (List.length prompts |> Random.int) in
   print_endline template;
   let resp = input_line Pervasives.stdin in
   let note : string = template ^ "\n" ^ resp in
   make_lumber note
+
+let gen_rand () = gen_prompt templates
+
+let gen_gratitude () = gen_prompt gratitude_journaling
 
 let make_graph () = ()
 
@@ -64,6 +77,7 @@ let main (args : string array) =
         ("-r", Arg.Unit gen_rand, "Generate a random note template");
         ("-n", Arg.Unit make_note, "Write a new note");
         ("-g", Arg.Unit make_graph, "Print graph of usage");
+        ("-gr", Arg.Unit gen_gratitude, "Gratitude Journaling prompt");
         ("-ly", Arg.Unit get_last_year, "Prints notes from today last year");
       ]
     in
