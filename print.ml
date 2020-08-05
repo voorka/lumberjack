@@ -8,12 +8,16 @@ let display_note_option note =
   | Some x -> print_endline x.note
   | None -> print_endline "Did not find a note"
 
+(* Might make a fancier later *)
+let display_note (lumber : lumber) = print_endline lumber.note
+
 (* Prints list of notes *)
-let rec display_note (note_list : lumber list) =
+let rec display_notes (note_list : lumber list) =
   match note_list with
   | h :: t ->
-      print_endline (h.note ^ "\n");
-      display_note t
+      display_note h;
+      print_endline "\n";
+      display_notes t
   | _ -> print_endline "Did not find any more notes"
 
 let get_range_dates (beginDate : tm) (endDate : tm) =
@@ -21,7 +25,7 @@ let get_range_dates (beginDate : tm) (endDate : tm) =
 
 (* Prints notes in range beginDate to endDate  *)
 let print_range_dates (beginDate : tm) (endDate : tm) =
-  display_note (get_range_dates beginDate endDate)
+  display_notes (get_range_dates beginDate endDate)
 
 (* Prints range of notes from string input of form MM/DD/YYYY//HH:MM:SS-MM/DD/YYYY//HH:MM:SS *)
 let print_range_note x =
@@ -60,14 +64,8 @@ let get_all () =
            Parser.getDate)
     |> string_of_int )
 
-(* Prints all notes from 0/0 to today *)
-let print_all () =
-  print_range_dates
-    (Lumber.get_earliest_date !Init.currentTreeref)
-    Parser.getDate
-
 let find_occurences x =
-  display_note (List.rev (Lumber.find_all_notes x !Init.currentTreeref))
+  display_notes (List.rev (Lumber.find_all_notes x !Init.currentTreeref))
 
 let print_metrics () : unit =
   let (date_freq : (tm * int) list) =

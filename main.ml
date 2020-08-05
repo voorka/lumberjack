@@ -13,13 +13,21 @@ let make_lumber note =
   let new_lum = { date = d; note = note_with_metadata; tags = [] } in
   Init.currentTreeref := Lumber.add_log tree new_lum
 
-let make_note () =
-  let rec keep_writing notes =
-    let note = input_line Pervasives.stdin in
-    if String.length note < 1 then List.rev notes |> String.concat "\n"
-    else keep_writing (note :: notes)
-  in
-  keep_writing [] |> make_lumber
+let rec read_input acc =
+  let note = input_line Pervasives.stdin in
+  if String.length note < 1 then List.rev acc |> String.concat "\n"
+  else read_input (note :: acc)
+
+let make_note () = read_input [] |> make_lumber
+
+(* Write tree to a file *)
+let write_tree () =
+  let oc = open_out !Init.file_ref in
+  (fun x -> output_string oc (x.note ^ "\n\n")) |> inorder !Init.currentTreeref;
+  close_out oc
+
+let print_tree () =
+  (fun x -> print_string (x.note ^ "\n\n")) |> inorder !Init.currentTreeref
 
 let templates =
   [
@@ -45,7 +53,14 @@ let gen_rand () = gen_prompt templates
 
 let gen_gratitude () = gen_prompt gratitude_journaling
 
-let make_graph () = ()
+let amend () =
+  let tree = !Init.currentTreeref in
+  let last_log : lumber = Lumber.get_last_log tree in
+  Print.display_note last_log;
+  let addendum = read_input [ last_log.note ] in
+  let new_log = { last_log with note = addendum } in
+  Init.currentTreeref := Lumber.replace_log tree new_log;
+  write_tree ()
 
 let get_last_year () =
   let date : tm = getDate in
@@ -65,18 +80,18 @@ let main (args : string array) =
           Arg.String print_range_note,
           "Prints note from date range to stdout. Date range must be of form \
            MM/DD/YYYY-MM/DD/YYYY" );
-        ("-ga", Arg.Unit print_all, "Prints all notes");
-        ("-f", Arg.String find_occurences, "Finds all notes containing keyword");
+        ("-a", Arg.Unit amend, "Amend previous note");
+        ("-ga", Arg.Unit print_tree, "Prints all logs");
+        ("-f", Arg.String find_occurences, "Finds all logs containing keyword");
         ( "-m",
           Arg.Unit print_metrics,
           "Prints character count metrics from past months" );
-        ("-nc", Arg.Unit get_all, "Prints the total number of notes");
+        ("-nc", Arg.Unit get_all, "Prints the total number of logs");
         ( "-fc",
           Arg.String print_count,
           "Prints the number of notes containing keyword" );
         ("-r", Arg.Unit gen_rand, "Generate a random note template");
-        ("-n", Arg.Unit make_note, "Write a new note");
-        ("-g", Arg.Unit make_graph, "Print graph of usage");
+        ("-n", Arg.Unit make_note, "log");
         ("-gr", Arg.Unit gen_gratitude, "Gratitude Journaling prompt");
         ("-ly", Arg.Unit get_last_year, "Prints notes from today last year");
       ]

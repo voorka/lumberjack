@@ -14,3 +14,7 @@ val find_all_notes : string -> tree -> lumber list
 val collect_metrics : tree -> (tm * int) list
 
 val get_earliest_date : tree -> tm
+
+val get_last_log : tree -> lumber
+
+val replace_log : tree -> lumber -> tree

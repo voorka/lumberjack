@@ -79,7 +79,6 @@ let rec add_log tree lum =
                  r,
                  h + 1 )) )
 
-
 (*  Adds list of lumber to tree *)
 let add_logs llist : tree = List.fold_left add_log Leaf llist
 
@@ -155,6 +154,18 @@ let rec get_latest_date tree : tm =
   | Leaf -> getDate
   | Node (d, _, r, 1) -> d.date
   | Node (d, _, r, _) -> get_latest_date r
+
+let rec get_last_log tree : lumber =
+  match tree with
+  | Leaf -> raise (Failure "No previous note was found")
+  | Node (d, _, Leaf, _) -> d
+  | Node (_, _, r, _) -> get_last_log r
+
+let rec replace_log tree note : tree =
+  match tree with
+  | Leaf -> Leaf
+  | Node (d, l, Leaf, h) -> Node (note, l, Leaf, h)
+  | Node (d, l, r, h) -> Node (d, l, replace_log r note, h)
 
 let get_month_list e l : tm list =
   let empty_date =
